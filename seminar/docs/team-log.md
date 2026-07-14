@@ -49,7 +49,44 @@ Selenium 4 thêm 5 relative locator: `above()`, `below()`, `toLeftOf()`, `toRigh
 ### [ ] WAT-12 — Test FR-08 Checkout (flow #3) — Quang
 **SP:** 3 · **AC:** end-to-end, test data (user, sản phẩm) reproducible
 
-〔Quang điền: lệnh chạy, kết quả, test data dùng, ảnh/log〕
+**1. Lệnh để chạy chương trình (chạy theo thứ tự được mô tả):**
+ 1. Khởi động backend
+```
+cd backend
+npm ci
+node server.js
+```
+ 2. Khởi động test chức năng ở frontend-web
+```
+cd frontend-web
+npm ci
+npx playwright install --with-deps
+npx playwright test tests/checkout.spec.js
+```
+ 3. Khởi động frontend-admin để kiểm tra kết quả
+```
+cd frontend-admin
+npm install
+npm run dev
+```
+
+**2. Kết quả mong đợi:**
+1. Truy cập website frontend admin bằng `localhost:5174`
+2. Ở phần `Dashboard`, `Tổng doanh thu` sẽ hiện 0đ và `Tổng số đơn hàng` sẽ hiện 1 
+3. Vào mục `Đơn hàng`, một đơn hàng sẽ xuất hiện ở trạng thái `Chờ xác nhận`
+
+**3. Dữ liệu đầu vào:**
+* Tài khoản test: `test1234@eshop.com`/`Test1234!`
+* Web (user lẫn admin) ở trạng thái clean-state (i.e.: tài khoản chưa đăng nhập, chưa check-out, chưa có hàng ở trong giỏ hàng)
+* Sản phẩm được thêm vào giỏ để thanh toán: `Iphone 15 Pro Max` (giá 30.000.000đ)
+
+**4. Hình ảnh kết quả:**
+1. Ảnh kiểm thử chức năng checkout bằng playwright trên command line
+![Ảnh kiểm thử chức năng checkout bằng playwright trên command line](/seminar/docs/img/checkout_success.png)
+
+2. Ảnh kết quả trên dashboard Admin
+![Ảnh kết quả trên dashboard Admin](/seminar/docs/img/checkout_success_2.png)
+
 
 ---
 
@@ -93,7 +130,7 @@ Selenium 4 thêm 5 relative locator: `above()`, `below()`, `toLeftOf()`, `toRigh
 ### [ ] WAT-20 — Draft Activity_Worksheet.md "Locator Brawl" — Quang
 **SP:** 3 · **AC:** time-boxed 0:00–0:25, worksheet + answer key, khả thi offline sau setup
 
-〔Quang điền: bản worksheet + answer key〕
+Đã hoàn thành — xem file [Activity_Worksheet.md](/seminar/docs/Activity_Worksheet.md)
 
 ---
 
