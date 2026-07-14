@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('FR-08 Checkout: login, add item, and complete checkout successfully', async ({ page }) => {
+test('FR-08 Checkout: login -> add item -> complete checkout', async ({ page }) => {
   await page.goto('/login');
 
   // Login with seeded user
