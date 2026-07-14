@@ -27,13 +27,13 @@
 
 Most of what a user actually does on EShop happens through a browser tab: signing in, browsing products, dropping something into a cart, paying. Out of the platform's 22 functional requirements, a sizeable chunk live entirely at that browser layer. Re-checking those flows by hand after every commit doesn't hold up once the codebase grows past a certain size — that's the gap web automation testing is meant to close.
 
-This guide walks through how our team approached that gap for EShop, centered on **Playwright** as our main framework, with **GitHub Copilot / Cursor** layered on top as the AI-augmented half of the comparison required by the seminar. We looked at Selenium 4 and Cypress as alternatives; Playwright won out mostly because of its multi-browser support, the built-in codegen/trace-viewer tooling, and how naturally it fits a TypeScript codebase. The full reasoning behind that decision lives in `Tool_Survey_Proposal.md` from Stage S1 — this document doesn't repeat it.
+This guide walks through how our team approached that gap for EShop, centered on **Playwright** as the traditional framework and **GitHub Copilot Agent Mode + Playwright MCP** as the grounded AI track used in the seminar comparison. We looked at Selenium 4 and Cypress as alternatives; Playwright won out mostly because of its multi-browser support, the built-in codegen/trace-viewer tooling, and how naturally it fits a TypeScript codebase. The full reasoning behind that decision lives in `Tool_Survey_Proposal.md` from Stage S1 — this document does not repeat it.
 
 A few notes on scope before diving in:
 
 - This is not a Playwright tutorial from scratch. Official docs (linked in Section 7) already cover that ground well.
 - Everything here is scoped to what actually changes, or breaks, when the target application is specifically EShop rather than a generic demo site.
-- Intended readers: teammates setting up a clean environment, classmates following along during the live seminar, and anyone deciding whether Playwright + an AI assistant is a sensible combination for a project EShop's size.
+- Intended readers: teammates setting up a clean environment, classmates following along during the live seminar, and anyone deciding how the hand-written and AI-assisted flows are actually run on EShop.
 
 ## 2. Installation and Setup
 
@@ -124,17 +124,17 @@ use: {
 
 ## 3. First Steps
 
-Walkthrough below automates **FR-02 (Login)**, tied to Study Milestones M1–M2. Kept to 15 steps or fewer.
+The walkthrough below starts from **FR-02 (Login + lockout)** and then reuses the authenticated session for **FR-07 (Add-to-Cart)** and **FR-08 (Checkout)**. This section is the **hand-written Playwright baseline** for the seminar. The MCP/Copilot workflow is still part of the project, but it belongs to the AI comparison track and is described separately in the note below.
 
-*〔Team note: verify every selector against the real EShop markup using `npx playwright codegen`. What's shown here is a template pattern using `data-testid` naming — not confirmed against actual EShop DOM yet.〕*
+*Team note: verify every selector against the real EShop markup using `npx playwright codegen`. EShop does not currently expose `data-testid` hooks for the main flows, and the login inputs are not wired to accessible labels, so Codegen may fall back to positional `getByRole('textbox').nth(n)` locators rather than `getByLabel()`.*
 
 1. Get EShop running locally first (Section 2).
 2. Rather than guessing selectors, record a starting point:
    `npx playwright codegen http://localhost:5173`
 3. Click through the login form inside the recorder; it suggests locators live as you interact.
 4. Move the generated steps into `tests/login.spec.js`.
-5. Swap out any brittle CSS/XPath locators the recorder suggested for role- or test-id-based ones (rationale in Section 4).
-6. Shape the test around Arrange–Act–Assert. Note: EShop's login inputs aren't wired to accessible labels, so Codegen fell back to positional `getByRole('textbox').nth(n)` locators rather than `getByLabel()` — see the maintainability caveat in Section 4.
+5. Swap out brittle CSS/XPath locators for the most stable locator available in the current markup: role, text, label, or test ID.
+6. Shape the test around Arrange–Act–Assert. Because the login inputs are not linked to accessible labels in the current EShop markup, Codegen may fall back to positional `getByRole('textbox').first()` and `.nth(1)` locators rather than `getByLabel()`.
    ```js
    test.describe('FR-02: Login', () => {
 
@@ -159,14 +159,16 @@ Walkthrough below automates **FR-02 (Login)**, tied to Study Milestones M1–M2.
    });
    ```
 7. Run just this spec: `npx playwright test tests/login.spec.js`.
-8. Re-run with `--headed` once to visually confirm it's clicking the right things, not just passing by accident.
-9. Add a second case covering **lockout** (also FR-02) — repeated bad logins should trigger a lockout message; assert on it.
-10. Turn both cases into a parameterised test (valid/invalid credentials as a data table) per the Learning Objectives in the T02 brief.
-11. Run across browsers: `npx playwright test --project=chromium --project=firefox`.
-12. Check the report: `npx playwright show-report`.
-13. Commit the spec and any test fixtures/data.
-14. Note the run outcome (pass/fail, browser, duration) in `docs/team-log.md`.
-15. Reuse this same pattern later for FR-07 (Add-to-Cart) and FR-08 (Checkout).
+8. Re-run with `--headed` once to visually confirm it is clicking the right things, not just passing by accident.
+9. Add a lockout case for repeated bad logins if the current backend seed supports it, and assert on the lockout message.
+10. Refactor the login cases into a parameterised test if that keeps the assertions clearer.
+11. Reuse the same authenticated state for FR-07 and FR-08 if you want the flow to stay focused on cart and checkout behaviour rather than re-testing login every time.
+12. Run across browsers when needed: `npx playwright test --project=chromium --project=firefox`.
+13. Check the report: `npx playwright show-report`.
+14. Commit the spec and any test fixtures/data.
+15. Note the run outcome (pass/fail, browser, duration) in `docs/team-log.md`.
+
+**If you are reproducing the seminar's AI comparison track:** keep the baseline spec above, then open Copilot Agent Mode with the Playwright MCP server and let the agent draft or repair a separate version of the same flow from live browser state. Do not mix the MCP flow into the baseline checklist, because the seminar compares the two approaches side by side.
 
 ## 4. Advanced Usage
 
@@ -195,6 +197,8 @@ export default defineConfig({
 
 **When something fails.** `--debug` opens the Playwright Inspector for step-by-step execution. For failures that don't reproduce locally — usually CI-only — the trace viewer (`npx playwright show-trace`) replays DOM snapshots, network activity, and console output from the failed run, which is normally the fastest way in.
 
+**AI-grounded workflow.** For the seminar's AI track, use Copilot Agent Mode together with Playwright MCP rather than repository context alone. That is the configuration that grounds generated locators in the live page and avoids hallucinated selectors such as `#cart-badge`.
+
 ## 5. Troubleshooting
 
 | Error we hit | Root cause | How we fixed it |
@@ -218,6 +222,8 @@ Ways this tooling can produce a misleading result rather than a clean pass/fail 
 ## 7. References
 
 - Playwright Team — *Best Practices*, official Playwright documentation. https://playwright.dev/docs/best-practices
+- Playwright Team — *Test Agents*, official Playwright documentation. https://playwright.dev/docs/test-agents
+- Microsoft — *playwright-mcp*, official repository. https://github.com/microsoft/playwright-mcp
 - Bach, J. (1999) — *Test Automation Snake Oil*, v2.1, Satisfice, Inc. https://www.satisfice.com/download/test-automation-snake-oil
 - mabl — *How Auto-Heal Works*, mabl Help Center. https://help.mabl.com/hc/en-us/articles/19078583792404-How-auto-heal-works
 - Selenium Project — *Locator Strategies: Relative Locators*, official Selenium documentation. https://www.selenium.dev/documentation/webdriver/elements/locators/
