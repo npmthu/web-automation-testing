@@ -345,7 +345,7 @@ dẫn).
 
 **SP:** 5 · **AC:** 5–8 phút, 1080p, ≤100MB, tiếng Anh, không nhạc nền, 1 feature Playwright + 1 feature AI
 
-〔Khoa/Hiếu điền: link file, thời lượng, nội dung từng đoạn〕
+[Link video](https://youtu.be/6GxK0aGMqVY)
 
 ---
 

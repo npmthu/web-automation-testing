@@ -8,7 +8,7 @@
 - 23127393 — Nguyễn Đăng Khoa
 
 **Software Under Test (SUT):** [EShop](https://github.com/ttbhanh/eshop-sut/tree/main) (React + Node.js/Express)
-**Companion deliverables:** `Tool_Survey_Proposal.md` (S1) · `User_Guide.md` (S4) · `Demo_Screencast.mp4` (S4) · `Activity_Worksheet.md` (S5) · `metrics/flakiness.md` (S3)
+**Companion deliverables:** `Tool_Survey_Proposal.md` (S1) · `User_Guide.md` (S4) · [`Demo_Screencast.mp4`](https://youtu.be/6GxK0aGMqVY) (S4) · `Activity_Worksheet.md` (S5) · `metrics/flakiness.md` (S3)
 **Claim discipline:** every statement is anchored either in cited official documentation or in an experiment the team reproduced itself — the latter are always marked *"in our study" / "in our experiment."*
 
 ---
@@ -271,6 +271,7 @@ use: {
 
 ## Part V — Demo Scenario / Live Seminar Script
 
+ **Recorded walkthrough:** [Demo_Screencast.mp4](https://youtu.be/6GxK0aGMqVY) — covers Part A (traditional Playwright), Part B (Copilot with/without MCP), and Part C (the healing trap) described below.
 
 **Claim discipline for the live session:** every result is phrased "in our experiment / in our runs," never "the AI does X." Every tool-capability claim is anchored to official docs.
 
