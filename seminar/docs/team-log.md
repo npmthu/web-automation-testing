@@ -8,12 +8,47 @@
 
 ## SPRINT 1
 
-### [ ] WAT-06 — Test FR-02 Login + lockout (flow #1) — Khoa
+### [ x WAT-06 — Test FR-02 Login + lockout (flow #1) — Khoa
 
 **SP:** 5 · **Acceptance Criteria:** pass trên chromium + firefox, parameterised, locator dùng `data-test-id`
 
-〔Khoa điền: lệnh chạy, kết quả pass/fail, locator dùng, ảnh/log〕
+**1. Lệnh chạy:**
+```
+npx playwright test tests/fr02-login-A.spec.js tests/fr02-login-B.spec.js tests/fr02-login-C.spec.js --project=chromium --project=firefox
+```
 
+ Chưa chạy `--project=firefox` — cần bổ sung để đạt đủ AC trước khi đóng ticket.
+
+**2. Kết quả:**
+| File | Tests | Chromium | Firefox |
+|---|---|---|---|
+| fr02-login-A.spec.js | 12 | 12 passed (3.2m) | *chưa chạy* |
+| fr02-login-B.spec.js | 4 | 4 passed (2.4s) | *chưa chạy* |
+| fr02-login-C.spec.js | 3 | 2 passed, **1 failed** (1.7s) | *chưa chạy* |
+| **Tổng** | **19** | **18 passed, 1 failed** | — |
+
+**Test fail — không phải flaky, là bug thật ở backend:**
+- **Case:** `fr02-login-C.spec.js:53:5` — TC-18a: "Backend phải từ chối khi user thường PUT role=admin"
+- **BUG-04:** Backend chấp nhận PUT `role=admin` từ user thường, trả về `HTTP 200` (`{"message":"Profile updated"}`) thay vì từ chối như kỳ vọng (`expected: not 200`)
+- **Liên quan:** TC-18b (escalate xong login vào Admin app) đã đúng — bị chặn đúng như kỳ vọng, redirect về `http://localhost:5174/`. Vậy lỗi chỉ nằm ở tầng API (`PUT /api/users/me`), chưa tới mức chiếm được quyền Admin app, nhưng vẫn là lỗ hổng cần backend fix.
+- Error context lưu tại: `test-results/fr02-login-C-TC-18a-Backend-c3a43--user-thường-PUT-role-admin-chromium/error-context.md`
+
+**3. Locator dùng:**
+- `page.getByTestId('____')` *(điền tên `data-test-id` thật đã dùng trong A/B/C)*
+
+**4. Ghi chú:**
+- `login-example.spec.js` (positional `.first()/.nth(1)`) chỉ là bài minh hoạ Section 3 của `User_Guide.md`, khác với bộ test chính thức đạt AC (`fr02-login-A/B/C.spec.js`, data-test-id).
+- BUG-04 nên được log thành GitHub Issue riêng (không gộp vào ticket này), và có thể dùng làm ví dụ thật cho phần "Failure Modes" hoặc thậm chí phần security trong User_Guide — vì nó chứng minh test tự động hoá thực sự bắt được lỗi thật, không phải chỉ chạy cho có.
+
+**5. Hình ảnh kết quả:**
+1. Kết quả chạy `fr02-login-C.spec.js` — 2 passed, 1 failed (BUG-04)
+![fr02-login-C terminal output](/seminar/docs/img/wat06_C_terminal.png)
+
+2. Kết quả chạy `fr02-login-B.spec.js` — 4 passed
+![fr02-login-B terminal output](/seminar/docs/img/wat06_B_terminal.png)
+
+3. Kết quả chạy `fr02-login-A.spec.js` — 12 passed
+![fr02-login-A terminal output](/seminar/docs/img/wat06_A_terminal.png)
 ---
 
 ### [x] WAT-09 — Spike: đọc reading list — Hiếu
@@ -36,7 +71,7 @@ _→ 4 tóm tắt trên sẽ chuyển thẳng vào Section 7 References của Us
 
 ---
 
-### [ ] WAT-10 — Draft khung User_Guide.md — Hiếu
+### [x] WAT-10 — Draft khung User_Guide.md — Hiếu
 
 **SP:** 2 · Đã hoàn thành riêng — xem file `User_Guide.md`, mục Introduction.
 
@@ -63,7 +98,7 @@ không có badge đếm item.
 
 ---
 
-### [ ] WAT-12 — Test FR-08 Checkout (flow #3) — Quang
+### [x] WAT-12 — Test FR-08 Checkout (flow #3) — Quang
 
 **SP:** 3 · **AC:** end-to-end, test data (user, sản phẩm) reproducible
 
@@ -191,9 +226,7 @@ phẩm từ DOM thay vì hardcode, thêm lại row-count assert, thêm
 
 **Chưa làm.** Môi trường làm WAT-15 không có Testim account (ghi rõ trong
 `prompt-log.md`: "environment didn't have ... a Testim account"). Cần đăng
-ký trial (WAT-08) trước khi làm được ticket này — để `[ ]` thay vì bịa kết
-quả.
-
+ký trial (WAT-08) trước khi làm được ticket này.
 ---
 
 ### [x] WAT-17 — Diff assertions AI-generated vs hand-written — Thư
@@ -225,15 +258,51 @@ mục "WAT-18".
 
 ---
 
-### [ ] WAT-19 — Sections 2–3: Installation + First Test — Hiếu
+### [x] WAT-19 — Sections 2–3: Installation + First Test — Hiếu
 
 **SP:** 3 · **AC:** người ngoài team reproduce được First Test theo đúng guide
 
-〔Hiếu điền sau khi Khoa/M1 xong WAT-04/05/06 — xem `User_Guide.md` phần 〔fill in〕〕
+**Cài đặt:** `npm init playwright@latest` — chọn **JavaScript** (không phải
+TypeScript), thư mục mặc định `tests/`, cài cả 3 browser (chromium, firefox,
+webkit). `baseURL` set trong `playwright.config.js` trỏ về
+`http://localhost:5173` (frontend-web qua `npm run dev`; backend qua
+`node server.js` ở port 3000).
+
+**Sự cố gặp trong lúc setup (đã đưa vào `User_Guide.md` §5 —
+Troubleshooting):** `login-example.spec.js` ban đầu bị đặt sai thư mục
+(`seminar/seminar/` thay vì `seminar/tests/`), khiến `page.goto('/')` báo
+lỗi `Cannot navigate to invalid URL` vì file nằm ngoài `testDir: './tests'`
+của config root. Fix: dời file vào đúng `tests/`.
+
+**Chẩn đoán nhầm ban đầu — đã đính chính:** trong lúc debug, phát hiện có 2
+file `playwright.config.js` (root và `frontend-web/`) và ban đầu nghi đây là
+lỗi tạo nhầm, định xoá cái trong `frontend-web/`. Sau khi pull lại repo từ
+Thư và đối chiếu với WAT-11/WAT-12, xác nhận đây là **2 project tách biệt
+có chủ đích**: root lo login (`tests/`), `frontend-web/` có config riêng lo
+cart/checkout/AI-track. Không xoá gì — đã ghi rõ cấu trúc này vào
+`User_Guide.md` §5 để tránh người khác hiểu nhầm giống vậy.
+
+**First Test (FR-02 Login):** dùng `npx playwright codegen
+http://localhost:5173` để lấy locator thật thay vì đoán — form login không
+gắn `label`/`placeholder` chuẩn nên Codegen trả về locator theo vị trí
+(`getByRole('textbox').first()` / `.nth(1)`), không lấy được bằng
+`getByLabel()` — ghi làm 1 finding cho `User_Guide.md` §6 (Failure Modes),
+trùng khớp với phát hiện tương tự của Thư ở FR-07 (field "Username" nhưng
+thực chất là email).
+
+Viết `tests/login-example.spec.js` với 2 test case (valid credentials login
++ invalid credentials hiện đúng thông báo lỗi *"Đăng nhập thất bại. Vui lòng
+kiểm tra lại."*) — đặt tên `-example` để phân biệt rõ với bộ test FR-02
+chính thức, đầy đủ hơn (lockout, edge case, security) của Khoa
+(`fr02-login-A/B/C.spec.js`, WAT-06).
+
+**Kết quả:** sau khi sửa xong thư mục, chạy lại
+`npx playwright test tests/login-example.spec.js` — **2/2 pass** (cả valid
+và invalid credentials). [Ảnh kết quả](/seminar/docs/img/run_login_example.png)
 
 ---
 
-### [ ] WAT-20 — Draft Activity_Worksheet.md "Locator Brawl" — Quang
+### [x] WAT-20 — Draft Activity_Worksheet.md "Locator Brawl" — Quang
 
 **SP:** 3 · **AC:** time-boxed 0:00–0:25, worksheet + answer key, khả thi offline sau setup
 
@@ -243,11 +312,32 @@ mục "WAT-18".
 
 ## SPRINT 3
 
-### [ ] WAT-21 — Hoàn thành sections 4–7 User Guide — Khoa
+### [x] WAT-21 — Hoàn thành sections 4–7 User Guide — Khoa + Hiếu
 
 **SP:** 5 · **AC:** Advanced Usage, Troubleshooting (≥3 lỗi thật), Failure Modes (≥3), References
 
-〔Khoa điền dựa trên toàn bộ team-log Sprint 1–2 — xem bản nháp sẵn trong `User_Guide.md`, cần thay các 〔fill in〕 bằng dữ liệu thật〕
+**Khoa** viết bản đầu, dựa trên toàn bộ team-log Sprint 1–2: Section 4
+(config file, locator priority, parallel workers, `storageState`, trace
+viewer, AI-grounded workflow), Section 6 (6 failure mode thật — 3 từ AI
+track có sẵn + 3 mới từ WAT-13/14: network throttling làm `page.goto`
+timeout, strict-mode violation do locator không scope, timeout không có
+margin khi có concurrency thật), Section 7 (đủ 6 nguồn, đúng chuẩn trích
+dẫn).
+
+**Hiếu** rà lại sau khi Khoa nộp, sửa 3 chỗ còn sai/sót:
+
+1. Section 1 bị sót câu cũ nhắc "TypeScript" (nhóm dùng JavaScript) — sửa
+   lại đúng.
+2. Section 5 (Troubleshooting) dòng 2 mô tả sai — ghi "xoá config thừa
+   trong `frontend-web/`" trong khi thực tế đó là **thiết kế đúng, không
+   phải lỗi** (xem đính chính ở WAT-19) — viết lại đúng, thêm 1 đoạn note
+   giải thích cấu trúc 2 project (root vs `frontend-web/`) để người đọc
+   sau không hiểu nhầm giống vậy.
+3. Section 5 lúc đó chỉ có 2 lỗi thật (thiếu so với AC ≥3) và còn 1 dòng
+   bảng trống — thêm dòng thứ 3 (strict-mode violation, lấy từ dữ liệu thật
+   đã có sẵn ở Section 6), xoá dòng trống.
+
+**Kết quả:** `User_Guide.md` đã đủ 7 section, ảnh screenshot (`img/install_success.png`) và 6 reference (có link thật, không copy).
 
 ---
 
@@ -255,7 +345,7 @@ mục "WAT-18".
 
 **SP:** 5 · **AC:** 5–8 phút, 1080p, ≤100MB, tiếng Anh, không nhạc nền, 1 feature Playwright + 1 feature AI
 
-〔Khoa/Hiếu điền: link file, thời lượng, nội dung từng đoạn〕
+[Link video](https://youtu.be/6GxK0aGMqVY)
 
 ---
 
