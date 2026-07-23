@@ -81,14 +81,12 @@ The lifetime cost of a UI suite is dominated not by authoring but by maintenance
 
 **Architecture in brief.** A persistent connection from the Node test runner to each browser instance; browser _contexts_ provide cheap, isolated incognito-like profiles per test, enabling parallelism without cross-test state leaks. No driver binaries to version-manage. Because the framework sits on the browser's own protocol, it can subscribe to page lifecycle events — the foundation of its auto-waiting behaviour.
 
-**Features load-bearing for this project:**
-
 - **Auto-waiting actions and web-first assertions.** Every action performs actionability checks; every `expect()` retries until pass or timeout. This is the mechanism behind our "no hard sleeps" rule and the main structural defence against timing flakiness (§4).
 - **Locator engine.** `getByRole`, `getByLabel`, `getByText`, `getByTestId` implement the user-facing priority order of §3 directly in the API — the theory and the tool agree.
 - **Codegen.** `npx playwright codegen` records interactions into draft test code. We used it for orientation, then rewrote locators by hand — recorded output tends toward structural selectors, a useful live illustration of §3.
 - **Trace viewer.** With `trace: 'retain-on-failure'`, every failed run yields a time-travel trace: per-action DOM snapshots, console, network. This is our debugging workflow (and demo Part A's showpiece) — evidence replaces guessing.
 - **Network throttling and emulation.** Context-level network condition control powers the 10-run throttled flakiness protocol without external proxies.
-- **Config as code.** Our `playwright.config.js` pins `baseURL`, restricts to Chromium for authoring (Firefox added for the cross-browser flakiness comparison), and uses `webServer` to auto-start the Vite dev server — one command (`npx playwright test`) brings up the whole stack except the separately-seeded backend.
+- **Config as code.** Our `playwright.config.js` pins `baseURL` and uses `webServer` to auto-start the Vite dev server — one command (`npx playwright test`) brings up the whole stack except the separately-seeded backend. Testing was restricted to Chromium throughout.
 
 **Known limitations we hit.** No native management of an out-of-repo backend process (we document manual seeding as a prerequisite); WebKit coverage on Linux lab machines requires extra system dependencies; and codegen's structural locators must not be mistaken for best practice.
 
