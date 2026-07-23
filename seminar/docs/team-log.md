@@ -33,14 +33,34 @@ npx playwright test tests/fr02-login-A.spec.js tests/fr02-login-B.spec.js tests/
 - **Liên quan:** TC-18b (escalate xong login vào Admin app) đã đúng — bị chặn đúng như kỳ vọng, redirect về `http://localhost:5174/`. Vậy lỗi chỉ nằm ở tầng API (`PUT /api/users/me`), chưa tới mức chiếm được quyền Admin app, nhưng vẫn là lỗ hổng cần backend fix.
 - Error context lưu tại: `test-results/fr02-login-C-TC-18a-Backend-c3a43--user-thường-PUT-role-admin-chromium/error-context.md`
 
-**3. Locator dùng:**
+3. **Locator thực tế đã sử dụng**:
+   Do SUT chưa gắn data-test-id và <label> chưa gắn for/id với <input>, bộ test sử dụng kết hợp Role, Positional (nth), và Tailwind CSS class:
 
-- `page.getByTestId('____')` _(điền tên `data-test-id` thật đã dùng trong A/B/C)_
+- Email input: page.locator('input[type="text"]').nth(0)
+
+- Password input: page.locator('input[type="text"]').nth(1)
+
+- Submit button: page.getByRole("button", { name: "Sign In" })
+
+- Error alert message: page.locator("div.bg-red-100.text-red-700")
 
 **4. Ghi chú:**
 
-- `login-example.spec.js` (positional `.first()/.nth(1)`) chỉ là bài minh hoạ Section 3 của `User_Guide.md`, khác với bộ test chính thức đạt AC (`fr02-login-A/B/C.spec.js`, data-test-id).
-- BUG-04 nên được log thành GitHub Issue riêng (không gộp vào ticket này), và có thể dùng làm ví dụ thật cho phần "Failure Modes" hoặc thậm chí phần security trong User_Guide — vì nó chứng minh test tự động hoá thực sự bắt được lỗi thật, không phải chỉ chạy cho có.
+**Về Locator**: Khuyến nghị Dev Team gắn thêm data-test-id cho các input/button ở Sprint sau để tránh test bị flaky khi UI thay đổi vị trí element.
+
+Ghi nhận 5 Deviations so với Spec:
+
+- [DEVIATION-1]: Lockout xảy ra sau 2 lần sai (Spec yêu cầu 3 lần).
+
+- [DEVIATION-2]: Thời gian lockout thực tế là ~3 phút (Spec ghi 30 giây).
+
+- [DEVIATION-3]: Email sai format không trigger HTML5 validation mà trả về message chung "Đăng nhập thất bại".
+
+- [DEVIATION-4]: Email chữ HOA bị từ chối (Case-sensitive - chưa chuẩn UX).
+
+- [DEVIATION-5]: HTML label không liên kết với input (for/id).
+
+BUG-04 đã được tạo ticket riêng trên GitHub Issue để team Backend fix độc lập.
 
 **5. Hình ảnh kết quả:**
 
