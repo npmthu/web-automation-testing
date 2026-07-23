@@ -1,0 +1,388 @@
+* commit dc50d8f627218077b660f9a2009fbfeac90b4c9c (HEAD -> main, origin/main)
+| Author: SieuNhanGao889 <dnthieu23@clc.fitus.edu.vn>
+| Date:   Wed Jul 15 09:57:57 2026 +0700
+| 
+|     add: video and slide link
+| 
+|  seminar/W05/Seminar_Report.md    | 3 ++-
+|  seminar/W06/demo-video-link.txt  | 1 +
+|  seminar/W06/slide-link.txt       | 1 +
+|  seminar/docs/git-log-commits.txt | 0
+|  seminar/docs/team-log.md         | 2 +-
+|  5 files changed, 5 insertions(+), 2 deletions(-)
+| 
+* commit 8bc6de3c7a74ade2bd451d7088a5f0178484884e
+| Author: SieuNhanGao889 <dnthieu23@clc.fitus.edu.vn>
+| Date:   Wed Jul 15 09:40:23 2026 +0700
+| 
+|     update: section 3 frist tep and team-log
+| 
+|  backend/database.sqlite                   | Bin 36864 -> 36864 bytes
+|  seminar/docs/User_Guide.md                |  38 ++++---
+|  seminar/docs/img/install_success.png      | Bin 11540 -> 11321 bytes
+|  seminar/docs/img/run_login_example.png    | Bin 0 -> 53070 bytes
+|  seminar/docs/img/wat06_A_terminal.png.png | Bin 0 -> 105782 bytes
+|  seminar/docs/img/wat06_B_terminal.png.png | Bin 0 -> 174366 bytes
+|  seminar/docs/img/wat06_C_terminal.png     | Bin 0 -> 597954 bytes
+|  seminar/docs/team-log.md                  | 116 +++++++++++++++++---
+|  tests/login-example.spec.js               |  14 ++-
+|  9 files changed, 132 insertions(+), 36 deletions(-)
+| 
+* commit 29cb2b423a63f552ad3fa279beb5a57450d3b930
+| Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| Date:   Wed Jul 15 08:09:15 2026 +0700
+| 
+|     docs: add failure modes to report and user guide
+| 
+|  seminar/W05/Seminar_Report.md |   6 ++
+|  seminar/docs/User_Guide.md    |   6 ++
+|  seminar/docs/team-log.md      | 154 +++++++++++++++++++++++++++-----
+|  3 files changed, 144 insertions(+), 22 deletions(-)
+| 
+* commit 271039cd08c586f5fc55d68c780290f1f9095dce
+| Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| Date:   Wed Jul 15 08:08:44 2026 +0700
+| 
+|     update: add flakiness metrics
+| 
+|  frontend-web/metrics/flakiness.md            | 137 +++++++++++++++++
+|  .../tests/add-to-cart.throttled.spec.js      |  61 ++++++++
+|  frontend-web/tests/flakiness-sweep.spec.js   |  59 +++++++
+|  metrics/flakiness.md                         | 121 ++++++++++++++-
+|  4 files changed, 376 insertions(+), 2 deletions(-)
+| 
+* commit 3e9a0d3e0b5043b363e63871d679e531b7a9c106
+| Author: SieuNhanGao889 <dnthieu23@clc.fitus.edu.vn>
+| Date:   Wed Jul 15 00:46:42 2026 +0700
+| 
+|     seminar_report
+| 
+|  seminar/W05/Seminar_Report.md | 369 ++++++++++++++++++++++++++++++++
+|  1 file changed, 369 insertions(+)
+| 
+* commit 2af11d68c2ca6692ff20e25c3ac415e005a40973
+| Author: SieuNhanGao889 <dnthieu23@clc.fitus.edu.vn>
+| Date:   Wed Jul 15 00:46:19 2026 +0700
+| 
+|     update: activity worksheet add answer key and add seminar_report
+| 
+|  seminar/W05/Activity_Worksheet.md  | 109 +++++++++++++++++
+|  seminar/W05/Answer_key.md          |  22 ++++
+|  seminar/docs/Activity_Worksheet.md | 168 ---------------------------
+|  seminar/docs/User_Guide.md         |  34 +++---
+|  4 files changed, 151 insertions(+), 182 deletions(-)
+|   
+*   commit 5acbf2b10f79b965581f27075b395570d22767ea
+|\  Merge: 257937a 1a702ca
+| | Author: Đặng Nguyễn Thành Hiếu <dnthieu23@clc.fitus.edu.vn>
+| | Date:   Wed Jul 15 00:14:04 2026 +0700
+| | 
+| |     Merge pull request #84 from npmthu/WAT-15-18
+| |     
+| |     Wat 15 18
+| | 
+| * commit 1a702caca28fcbda24a11a5a3982b0deaa459afc
+| | Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| | Date:   Tue Jul 14 17:12:45 2026 +0700
+| | 
+| |     WAT-15: remove redundant comments
+| | 
+| |  .../add-to-cart.ai-generated.spec.js   | 31 +++-----------
+| |  1 file changed, 7 insertions(+), 24 deletions(-)
+| | 
+| * commit 4e49cd8ef9009f6d4e6c06c1bae41fa4e7f592fd
+| | Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| | Date:   Tue Jul 14 17:06:39 2026 +0700
+| | 
+| |     WAT-15: implement AI-audited add-to-cart tests and flakiness metrics
+| | 
+| |  backend/database.sqlite                | Bin 36864 -> 36864 bytes
+| |  .../add-to-cart.ai-audited.spec.js     |  49 ++++
+| |  .../add-to-cart.ai-generated.spec.js   |  38 ++++
+| |  .../tests/ai-track/assertions-diff.md  |  74 ++++++
+| |  .../ai-track/flakiness-network.spec.js |  54 +++++
+| |  .../tests/ai-track/prompt-log.md       | 150 +++++++++++++
+| |  .../tests/ai-track/scenario.md         |  19 ++
+| |  .../tests/helpers/network-throttle.js  |  16 ++
+| |  metrics/flakiness.md                   |  68 ++++++
+| |  9 files changed, 468 insertions(+)
+| |   
+* |   commit 257937a6d942de574f436af56010292e0ef0e36b
+|\ \  Merge: 77ece2b 7679907
+| | | Author: Đặng Nguyễn Thành Hiếu <dnthieu23@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 23:35:13 2026 +0700
+| | | 
+| | |     Merge pull request #83 from npmthu/WAT-12-20
+| | |     
+| | |     WAT 12-20
+| | | 
+| * | commit 76799076770c47c6adc10c4933d73b1b0a1610e6
+| | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 23:21:13 2026 +0700
+| | | 
+| | |     chore: discard unnecessary playwright file
+| | | 
+| | |  .../playwright-wat12.yml         | 48 ----------
+| | |  1 file changed, 48 deletions(-)
+| | | 
+| * | commit b437bf4d22830393387dbff55d3e85de911f538e
+| | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 22:48:06 2026 +0700
+| | | 
+| | |     chore: reset database
+| | | 
+| | |  backend/database.sqlite | Bin 36864 -> 36864 bytes
+| | |  1 file changed, 0 insertions(+), 0 deletions(-)
+| | |   
+| * |   commit 1ef885bbc1c336feeebfa90c85b072ff5fb22113
+| |\ \  Merge: 88d99e3 f00b5c3
+| | | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | | Date:   Tue Jul 14 22:47:04 2026 +0700
+| | | | 
+| | | |     Merge branch 'WAT-12-20' of https://github.com/npmthu/web-automation-test
+ing into WAT-12-20
+| | | | 
+| | * | commit f00b5c37d582990b38c75fad8b41375813269d99
+| | | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | | Date:   Tue Jul 14 22:10:36 2026 +0700
+| | | | 
+| | | |     docs: add checkout success images
+| | | | 
+| | | |  ...checkout_success.png | Bin 0 -> 15574 bytes
+| | | |  ...eckout_success_2.png | Bin 0 -> 18294 bytes
+| | | |  2 files changed, 0 insertions(+), 0 deletions(-)
+| | | | 
+| * | | commit 88d99e3817bad1cf20ce1f23c8e3314416e2a0f2
+| |/ /  Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | |   Date:   Tue Jul 14 22:46:26 2026 +0700
+| | |   
+| | |       docs: add checkout images and update team log
+| | |   
+| | |    .../img/checkout_success.png  | Bin 0 -> 15574 bytes
+| | |    .../checkout_success_2.png    | Bin 0 -> 18294 bytes
+| | |    seminar/docs/team-log.md      |  41 +++++++-
+| | |    3 files changed, 39 insertions(+), 2 deletions(-)
+| | | 
+| * | commit d60021e70b63b116e0d8ee04b72ff6f35edeaa4c
+| | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 21:47:32 2026 +0700
+| | | 
+| | |     chore: edit a more concise test name
+| | | 
+| | |  frontend-web/tests/checkout.spec.js | 2 +-
+| | |  1 file changed, 1 insertion(+), 1 deletion(-)
+| | | 
+| * | commit 324f3f4583b52c0900ee1bac594fcea7368d977c
+| | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 21:06:09 2026 +0700
+| | | 
+| | |     docs: add Activity Worksheet
+| | | 
+| | |  .../docs/Activity_Worksheet.md | 168 +++++++++
+| | |  1 file changed, 168 insertions(+)
+| | | 
+| * | commit 4e02e6df68fbb6c6ec67e36ee064d4a7d4b70a56
+| | | Author: Gudako <lhmquang231@clc.fitus.edu.vn>
+| | | Date:   Tue Jul 14 21:05:30 2026 +0700
+| | | 
+| | |     feat(WAT-12): add Playwright for end-to-end testing and implement Checkout
+| | | 
+| | |  .../playwright-wat12.yml       |  48 +++++++++
+| | |  backend/database.sqlite        | Bin 36864 -> 36864 bytes
+| | |  .../tests/add-to-cart.spec.js  |   1 +
+| | |  .../tests/checkout.spec.js     |  30 ++++++
+| | |  4 files changed, 79 insertions(+)
+| | |   
+* | |   commit 77ece2b894528e738acb8c8bbfd69b5ed4ecdd9f
+|\ \ \  Merge: c1e35cc 2e2e17d
+| | | | Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| | | | Date:   Tue Jul 14 21:41:40 2026 +0700
+| | | | 
+| | | |     Merge branch 'main' of https://github.com/npmthu/web-automation-testing
+| | | | 
+| * | | commit 2e2e17df9d485224af9d7adb101d5c2c60bcc832
+| | | | Author: Nguyen Khoa <23127393@student.hcmus.edu.vn>
+| | | | Date:   Tue Jul 14 20:20:01 2026 +0700
+| | | | 
+| | | |     Add test script using Playwright for FR-02: Login (next)
+| | | | 
+| | | |  ...-login-C.spec.js | 160 ++++++
+| | | |  1 file changed, 160 insertions(+)
+| | | | 
+| * | | commit 4936a522c0987cbc8bc589410e94e41157493afb
+| | | | Author: Nguyen Khoa <23127393@student.hcmus.edu.vn>
+| | | | Date:   Tue Jul 14 20:19:51 2026 +0700
+| | | | 
+| | | |     Add test script using Playwright for FR-02: Login (next)
+| | | | 
+| | | |  ...2-login-B.spec.js | 66 ++++++
+| | | |  1 file changed, 66 insertions(+)
+| | | | 
+| * | | commit 6e4698f736febdaa181fba97c88999917baf3b3c
+| |/ /  Author: Nguyen Khoa <23127393@student.hcmus.edu.vn>
+| | |   Date:   Tue Jul 14 20:19:35 2026 +0700
+| | |   
+| | |       Add test script using Playwright for FR-02: Login
+| | |   
+| | |    tests/fr02-login-A.spec.js | 147 +++++++++
+| | |    1 file changed, 147 insertions(+)
+| | |   
+| * |   commit dcb1d86297227040b98ec3fadc3cae6c06903a79
+| |\ \  Merge: a24d8b1 efc6267
+| | |/  Author: Đặng Nguyễn Thành Hiếu <dnthieu23@clc.fitus.edu.vn>
+| |/|   Date:   Tue Jul 14 20:02:13 2026 +0700
+| | |   
+| | |       Merge pull request #81 from npmthu/master
+| | |       
+| | |       add: userguide and teamlog
+| | | 
+| | * commit efc6267a29cb993894da8c7dce3c6813e2f5e8f3 (origin/master)
+| |/  Author: SieuNhanGao889 <dnthieu23@clc.fitus.edu.vn>
+| |   Date:   Tue Jul 14 19:55:51 2026 +0700
+| |   
+| |       add: userguide and teamlog
+| |   
+| |    .github/workflows/playwright.yml    |  27 ++
+| |    .gitignore                          |   8 +
+| |    backend/database.sqlite             | Bin 36864 -> 36864 bytes
+| |    frontend-web/package-lock.json      |  18 -
+| |    package-lock.json                   |  97 +++++
+| |    package.json                        |  23 ++
+| |    playwright.config.js                |  81 ++++
+| |    seminar/docs/User_Guide.md          | 223 ++++++++++++
+| |    .../docs/img/install_success.png    | Bin 0 -> 11540 bytes
+| |    seminar/docs/team-log.md            | 123 +++++++
+| |    tests/example.spec.js               |  19 +
+| |    tests/login-example.spec.js         |  26 ++
+| |    12 files changed, 627 insertions(+), 18 deletions(-)
+| | 
+* | commit c1e35ccfedafd187a4dc4f04557d3a36f6fefad4
+|/  Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+|   Date:   Tue Jul 14 21:34:37 2026 +0700
+|   
+|       docs: add scripts and theory sections
+|   
+|    seminar/W05/Demo_Script.md | 192 +++++++++++++++++++++++++++++++++
+|    seminar/W05/Theory.md      | 151 ++++++++++++++++++++++++++
+|    2 files changed, 343 insertions(+)
+| 
+* commit a24d8b180e73be2302854dd99d60d2ca06dbfe83
+| Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| Date:   Tue Jul 14 14:29:03 2026 +0700
+| 
+|     WAT-11: add Playwright for end-to-end testing and implement add-to-cart test
+| 
+|  backend/.gitignore                     |  11 +
+|  frontend-web/.gitignore                |   6 +
+|  frontend-web/package-lock.json         | 492 ++++++++++++---------
+|  frontend-web/package.json              |   4 +-
+|  frontend-web/playwright.config.js      |  22 +
+|  frontend-web/tests/add-to-cart.spec.js |  33 ++
+|  seminar/W05/Demo_Script.md             |   0
+|  seminar/W05/Theory.md                  |   0
+|  8 files changed, 362 insertions(+), 206 deletions(-)
+| 
+* commit 2b769c11590e8760d76857bd275a494b53df9793
+| Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| Date:   Mon Jul 13 21:23:20 2026 +0700
+| 
+|     docs: add Tool Survey Proposal and Sprint Plan for Web Automation Testing
+| 
+|  seminar/W04/Tool_Survey_Proposal.md |  37 ++++++
+|  seminar/planning/Sprint_Plan.md     | 148 ++++++++++++++++++++++++
+|  2 files changed, 185 insertions(+)
+| 
+* commit d8d8c751c84dd6a18e769bd5927a128c59254041
+| Author: Thu Nguyen <thu.pham.minh.nguyen@mgm-tp.com>
+| Date:   Sat Jul 11 16:21:05 2026 +0700
+| 
+|     docs: add seminar guide and docs
+| 
+|  seminar/docs/Seminar_Guide.docx             | Bin 0 -> 42701 bytes
+|  seminar/docs/Seminar_Workflow_Briefing.pptx | Bin 0 -> 60795 bytes
+|  .../docs/T02_Web_Automation_Testing.docx    | Bin 0 -> 39709 bytes
+|  3 files changed, 0 insertions(+), 0 deletions(-)
+| 
+* commit 85af3ba875c88283615e22cb108f13e2fccaf0e9
+| Author: ttbhanh-hcmus <ttbhanh@hcmus.edu.vn>
+| Date:   Fri May 15 08:30:35 2026 +0700
+| 
+|     first upload
+| 
+|  README.md                                 |  290 +-
+|  api_specification.md                      |  214 +
+|  backend/database.js                       |  119 +
+|  backend/database.sqlite                   |  Bin 0 -> 36864 bytes
+|  backend/package-lock.json                 | 1663 ++++
+|  backend/package.json                      |   20 +
+|  backend/server.js                         |  572 ++
+|  backend/test_profile.js                   |    8 +
+|  frontend-admin/.gitignore                 |   24 +
+|  frontend-admin/README.md                  |   16 +
+|  frontend-admin/eslint.config.js           |   21 +
+|  frontend-admin/index.html                 |   13 +
+|  frontend-admin/package-lock.json          | 3681 +++++++
+|  frontend-admin/package.json               |   32 +
+|  frontend-admin/postcss.config.js          |    6 +
+|  frontend-admin/public/favicon.svg         |    1 +
+|  frontend-admin/public/icons.svg           |   24 +
+|  frontend-admin/src/App.css                |  184 +
+|  frontend-admin/src/App.jsx                |  922 ++
+|  frontend-admin/src/assets/hero.png        |  Bin 0 -> 13057 bytes
+|  frontend-admin/src/assets/react.svg       |    1 +
+|  frontend-admin/src/assets/vite.svg        |    1 +
+|  frontend-admin/src/index.css              |    8 +
+|  frontend-admin/src/main.jsx               |   10 +
+|  frontend-admin/tailwind.config.js         |   11 +
+|  frontend-admin/vite.config.js             |   11 +
+|  frontend-mobile/.gitignore                |   41 +
+|  frontend-mobile/App.js                    | 1300 +++
+|  frontend-mobile/app.json                  |   29 +
+|  frontend-mobile/assets/adaptive-icon.png  |  Bin 0 -> 17547 bytes
+|  frontend-mobile/assets/favicon.png        |  Bin 0 -> 1466 bytes
+|  frontend-mobile/assets/icon.png           |  Bin 0 -> 22380 bytes
+|  frontend-mobile/assets/splash-icon.png    |  Bin 0 -> 17547 bytes
+|  frontend-mobile/index.js                  |    8 +
+|  frontend-mobile/package-lock.json         | 8773 +++++++++++++++++
+|  frontend-mobile/package.json              |   18 +
+|  frontend-web/.gitignore                   |   24 +
+|  frontend-web/README.md                    |   16 +
+|  frontend-web/eslint.config.js             |   21 +
+|  frontend-web/index.html                   |   13 +
+|  frontend-web/package-lock.json            | 3681 +++++++
+|  frontend-web/package.json                 |   32 +
+|  frontend-web/postcss.config.js            |    6 +
+|  frontend-web/public/favicon.svg           |    1 +
+|  frontend-web/public/icons.svg             |   24 +
+|  frontend-web/src/App.css                  |  184 +
+|  frontend-web/src/App.jsx                  |   71 +
+|  frontend-web/src/assets/hero.png          |  Bin 0 -> 13057 bytes
+|  frontend-web/src/assets/react.svg         |    1 +
+|  frontend-web/src/assets/vite.svg          |    1 +
+|  frontend-web/src/context/AuthContext.jsx  |   50 +
+|  frontend-web/src/context/CartContext.jsx  |   36 +
+|  frontend-web/src/index.css                |   14 +
+|  frontend-web/src/main.jsx                 |   10 +
+|  frontend-web/src/pages/Cart.jsx           |   79 +
+|  frontend-web/src/pages/Checkout.jsx       |  151 +
+|  frontend-web/src/pages/ForgotPassword.jsx |  100 +
+|  frontend-web/src/pages/Home.jsx           |  116 +
+|  frontend-web/src/pages/Login.jsx          |   69 +
+|  frontend-web/src/pages/ProductDetail.jsx  |   73 +
+|  frontend-web/src/pages/Profile.jsx        |  217 +
+|  frontend-web/src/pages/Register.jsx       |   83 +
+|  frontend-web/tailwind.config.js           |   11 +
+|  frontend-web/vite.config.js               |    7 +
+|  run_servers.sh                            |    5 +
+|  setup_guide.md                            |  117 +
+|  66 files changed, 23232 insertions(+), 2 deletions(-)
+| 
+* commit 2f9bf2bab45855abf211377a5d5eba10031649e3
+  Author: Hanh Tran <ttbhanh@fit.hcmus.edu.vn>
+  Date:   Fri May 15 08:27:44 2026 +0700
+  
+      Initial commit
+  
+   README.md | 2 ++
+   1 file changed, 2 insertions(+)
+(END)
