@@ -183,7 +183,7 @@ _(Stage S1 deliverable — full version in `Tool_Survey_Proposal.md`)_
 - **Codegen** — `npx playwright codegen` records interactions into draft test code; used for orientation, then locators were rewritten by hand (recorded output tends toward structural selectors).
 - **Trace viewer** — with `trace: 'retain-on-failure'`, every failed run yields a time-travel trace (per-action DOM snapshots, console, network) — the demo Part A showpiece.
 - **Network throttling & emulation** — powers the 10-run throttled flakiness protocol without external proxies.
-- **Config as code** — `playwright.config.js` pins `baseURL`, restricts to Chromium for authoring (Firefox added for cross-browser flakiness comparison), and uses `webServer` to auto-start the Vite dev server.
+- **Config as code** — `playwright.config.js` pins baseURL and uses webServer to auto-start the Vite dev server; testing was restricted to Chromium throughout.
 
 **Known limitations hit.** No native management of an out-of-repo backend process (manual seeding documented as a prerequisite); WebKit on Linux lab machines needs extra system dependencies; codegen's structural locators must not be mistaken for best practice.
 
@@ -207,7 +207,7 @@ Three official agent definitions shipped with Playwright v1.56+ (`playwright.dev
 
 - **🎭 planner** — explores the running application through the browser and produces a human-readable Markdown test plan (`specs/*.md`), seeded with login/setup context so exploration starts authenticated. The plan is a reviewable artefact before any code exists.
 - **🎭 generator** — transforms an approved plan into executable Playwright specs, replaying steps in the live browser and verifying each locator resolves before committing it. Output is plain Playwright TypeScript in the team's repository — tests outlive any AI subscription.
-- **🎭 healer** — takes a failing test, re-runs it with browser access, inspects traces/snapshots, and either repairs it until it passes or marks it skipped if it concludes the functionality itself is broken. **In the team's experiment, the healer repaired _around_ a real defect** (the 2-click bug) rather than flagging it — see §19.
+- **🎭 healer** — The team did not run this agent against the 2-click bug live; the masking risk it describes was instead observed one step earlier, during test generation itself (§6, §19) — see there for what actually happened.
 
 **Operational notes.** Agent definitions should be regenerated after Playwright upgrades. Generation sessions take one to a few minutes per flow and consume request quota quickly (§14). Generated assertion depth lagged hand-written oracles and was strengthened manually.
 
@@ -219,7 +219,7 @@ That last point is important for the audience: even when the AI gets the interac
 
 **Cost and access.** Copilot Free provides limited monthly completions and chat/agent requests (exact numbers change and are not quoted here). New sign-ups for the paid individual and Student plans have been paused since April 2026; members verified before the pause retain access. This shaped the plan: each member's GitHub Education status was audited in Sprint 1, verified accounts were prioritised for agent sessions, scenarios were batched per session, planner output was reused rather than regenerated, and Claude/Cursor were kept as drop-in alternative drivers — possible only because MCP is client-agnostic.
 
-**Behavioural observations.** Without MCP: fluent, plausible, and unmoored — the `#cart-badge` invention. With MCP: locators grounded and largely role/text-based, but assertions still shallower than hand-written oracles.
+**Behavioural observations.** Without MCP: fluent but ungrounded — a first draft used getByLabel('Username'), a reasonable guess that failed outright since EShop's login inputs carry no accessible label. With MCP: locators grounded and largely role/text-based, but assertions still shallower than hand-written oracles
 
 That contrast is one of the central arguments of the seminar: browser grounding improves locator quality, but it does not automatically solve the oracle problem.
 
@@ -262,7 +262,7 @@ Confirm EShop responds in a browser at `http://localhost:5173` before writing an
 npm init playwright@latest
 ```
 
-Choices made: JavaScript, default `tests/` folder, GitHub Actions workflow optional, browsers installed (Chromium, Firefox, WebKit).
+Choices made: JavaScript, default `tests/` folder, GitHub Actions workflow optional, browsers installed (Chromium).
 
 ```bash
 npx playwright test   # sanity check — bundled sample test should pass on all browsers
@@ -283,18 +283,18 @@ use: {
 
 ## Part V — Demo Scenario / Live Seminar Script
 
-**Recorded walkthrough:** [Demo_Screencast.mp4](https://youtu.be/6GxK0aGMqVY) — covers Part A (traditional Playwright), Part B (Copilot with/without MCP), and Part C (the healing trap) described below.
+**Recorded walkthrough:** [Demo_Screencast.mp4](https://youtu.be/6GxK0aGMqVY) — covers Part A (traditional Playwright), Part B (Copilot with/without MCP), and Part C (the generation trap) described below.
 
 **Claim discipline for the live session:** every result is phrased "in our experiment / in our runs," never "the AI does X." Every tool-capability claim is anchored to official docs.
 
 **Roles:** M2 = Presenter · M1 = Demoer · M3 = Facilitator · M4 = Timekeeper. Slide deck ≤15 slides.
 
-| Block                 | Time      | Content                                                                      | Lead   |
-| --------------------- | --------- | ---------------------------------------------------------------------------- | ------ |
-| 1 — Pitch             | 0:00–0:10 | Why web automation, the tool landscape, the AI pick, when these tools fail   | M2     |
-| 2 — Live demo         | 0:10–0:20 | Traditional Playwright → AI generation (with/without MCP) → the healing trap | M1, M2 |
-| 3 — Audience activity | 0:20–0:40 | "Locator Brawl" hands-on exercise                                            | M3     |
-| 4 — Debrief + Q&A     | 0:40–0:45 | Numbers, recommendation memo, Q&A                                            | M2     |
+| Block                 | Time      | Content                                                                         | Lead   |
+| --------------------- | --------- | ------------------------------------------------------------------------------- | ------ |
+| 1 — Pitch             | 0:00–0:10 | Why web automation, the tool landscape, the AI pick, when these tools fail      | M2     |
+| 2 — Live demo         | 0:10–0:20 | Traditional Playwright → AI generation (with/without MCP) → the generation trap | M1, M2 |
+| 3 — Audience activity | 0:20–0:40 | "Locator Brawl" hands-on exercise                                               | M3     |
+| 4 — Debrief + Q&A     | 0:40–0:45 | Numbers, recommendation memo, Q&A                                               | M2     |
 
 ### 16. Live Demo Walkthrough (0:10–0:20)
 
@@ -302,9 +302,9 @@ use: {
 
 **Part A — Traditional Playwright (0:10–0:14).** `add-to-cart.spec.js`, written by hand, is walked through live: login → click through to cart (never `page.goto`, since EShop's cart lives only in React state and a full reload wipes it) → assertion on exact row count, product name, and quantity. Run with `npx playwright test add-to-cart --headed` → passes. The trace viewer is then opened on a pre-saved failing trace to show the time-travel debugging workflow. The point of this part is to show that a good traditional test is not only “green”; it is also readable, deterministic, and strong enough to detect the exact product and quantity that matter.
 
-**Part B — AI generation: repository context vs. live browser (0:14–0:18).** Copilot Agent Mode is prompted: _"Open localhost:5173, log in as test@eshop.com, add the first product to the cart, verify the cart page shows it. Then write a Playwright test for this."_ For contrast, the same prompt without MCP access (repository context only) is shown to have produced a selector for a `#cart-badge` element that does not exist anywhere in EShop — plausible, confident, wrong. The MCP-grounded run does not make that mistake, because it derives locators from live-page snapshots. The generated test's locators are decent (role-/text-based), but its assertion only checks that the cart page loaded — a weaker oracle than the hand-written version, illustrating the false-negative-factory risk from §6. This is the best place in the seminar to ask the audience what the test actually proves, because the code looks tidy even when the oracle is weak.
+**Part B — AI generation: repository context vs. live browser (0:14–0:18).** Copilot Agent Mode is prompted: _"Open localhost:5173, log in as test@eshop.com, add the first product to the cart, verify the cart page shows it. Then write a Playwright test for this."_ For contrast, the same prompt without MCP access (repository context only) is shown to have produced a getByLabel('Username') locator that fails outright, since EShop's login inputs have no accessible label — a plausible, confident guess from training-data patterns, wrong for this app. The MCP-grounded run does not make that mistake, because it derives locators from live-page snapshots. The generated test's locators are decent (role-/text-based), but its assertion only checks that the cart page loaded — a weaker oracle than the hand-written version, illustrating the false-negative-factory risk from §6. This is the best place in the seminar to ask the audience what the test actually proves, because the code looks tidy even when the oracle is weak.
 
-**Part C — The healing trap (0:18–0:20), the "money moment."** EShop's product-detail page has a real bug: the first click on "Add to cart" does nothing — it takes two clicks. A hand-written test through that page correctly fails. That failing test is handed to Playwright's healer agent. Per its docs, the healer either repairs the test or marks it skipped if it believes the functionality itself is broken. **In the team's experiment, it made the test pass by clicking twice** — a green test, with the bug still present; the repair encoded the defect into the test. This outcome is not guaranteed (the healer can instead flag the functionality as broken, the "good" outcome) — which is exactly the point: whether a heal masks a bug or exposes one is decided in code review, by a human reading the diff. **Never auto-merge a heal.** At this moment in the live demo, the seminar should pause and let the audience absorb the difference between “the test passes” and “the product is correct.”
+**Part C — the generation trap (0:18–0:20), the "money moment."** EShop's product-detail page has a real bug: the first click on "Add to cart" does nothing — it takes two clicks. This was found live during MCP-grounded test generation, not by a dedicated healer: after clicking once, the agent's own follow-up snapshot showed the cart still empty, so it simply clicked again, saw the item appear, and wrote the passing script around two clicks — without flagging the extra click as a possible defect. The generated test is green, and green for the right reason at the assertion level (the item really is in the cart), but the two-click requirement is encoded as normal setup rather than surfaced as a bug. Only a human audit, opening `ProductDetail.jsx`, found the real cause: a `clickCount === 0` guard swallowing the first click by design. Whether this counts as "the tool did its job" or "the tool masked a defect" is exactly the ambiguity the seminar should sit with — it's the same masking risk documented for dedicated self-healing tools (§6, §13), just occurring during generation instead of repair. **Every AI-drafted test still needs a human reading the source before merge**.
 
 ### 17. In-Class Activity — Locator Brawl (0:20–0:40)
 
@@ -319,11 +319,9 @@ The facilitator should keep the instructions concrete: do not ask the teams to w
 Selected prepared answers:
 
 - _"Why not Selenium?"_ — Its ecosystem is the widest, but the team optimised for a 3-week timeline; Playwright's codegen and trace viewer cut authoring/debugging time. For a legacy enterprise stack, Selenium remains a defensible pick.
-- _"Does this replace manual testers?"_ — It replaces typing, not judgment; the healing experiment is exactly what happens without a human oracle.
+- _"Does this replace manual testers?"_ — It replaces typing, not judgment; the generation-trap example (§16, Part C) is exactly what happens without a human oracle.
 - _"What does the AI cost?"_ — The MCP server and agent definitions are open source; Copilot's free plan has usage limits, budgeted for by batching sessions and reusing the planner's plan file.
 - _"Would Testim or Mabl show the same masking problem?"_ — Different mechanism, same risk class; any automatic repair can hide a defect.
-
-**Key contingencies:** network dies mid-demo → switch to backup recording, disclosed explicitly; Copilot quota exhausted → narrate from a saved agent transcript, disclosed as such; healer flags/skips instead of masking on the live run → pivot to a saved masking diff from earlier runs, same lesson either way.
 
 If the audience pushes on scope, the safest answer is to restate the study boundary: this project compares one traditional framework and one AI-augmented workflow on one SUT, over three user journeys. It does not claim universal superiority across all web apps.
 
@@ -335,7 +333,7 @@ Ways this tooling can produce a misleading result rather than a clean pass/fail 
 
 1. **Auto-wait can hide a real problem behind a passing test.** Playwright retries web-first assertions until an element becomes visible or stable — which cuts down on flakiness, but a genuinely slow or partially-broken loading state can still end in a green test as long as the element shows up before the timeout expires. Worth pairing functional assertions with an explicit timing check wherever load speed matters to the requirement.
 
-2. **Self-healing can repair around a real defect instead of exposing it.** In the team's own experiment (§16, Part C), Playwright's healer agent was given a test that correctly failed on EShop's genuine 2-click add-to-cart bug, and repaired it by clicking twice — producing a green test that no longer detects the bug. The same risk class applies to other auto-heal mechanisms (Testim's attribute-weight re-ranking, Mabl's DOM+visual healing): each picks a way to keep the test passing without confirming the underlying user-facing behaviour still holds. Mitigation: every heal is a code-review event, never an auto-merge; Mabl's own docs log a per-heal confidence score for the same reason, and periodically reviewing that log matters more than trusting an all-green run.
+2. **Self-healing can repair around a real defect instead of exposing it.** In the team's own experiment (§16, Part C; full trace in the WAT-15 prompt log), an MCP-grounded generation session discovered EShop's genuine 2-click add-to-cart bug live — the first click did nothing — and simply clicked twice to make the flow work, writing the passing script around it rather than flagging the extra click as a defect. The resulting test is green and its assertion is correct, but the defect itself is invisible unless a human reads the source. The same risk class applies to other auto-heal mechanisms (Testim's attribute-weight re-ranking, Mabl's DOM+visual healing): each picks a way to keep the test passing without confirming the underlying user-facing behaviour still holds. Mitigation: every heal is a code-review event, never an auto-merge; Mabl's own docs log a per-heal confidence score for the same reason, and periodically reviewing that log matters more than trusting an all-green run.
 
 3. **AI-generated assertions tend to only cover what the prompt described.** Asking an AI assistant for a test from a natural-language scenario usually nails the happy path implied by that description, but negative cases (an error toast, a disabled button, a validation message) are easy to leave out unless explicitly requested. Diffing AI-generated assertions against a hand-written checklist before merging catches most of this.
 
@@ -352,14 +350,14 @@ Ways this tooling can produce a misleading result rather than a clean pass/fail 
 ## Part VII — Synthesis, Recommendation & Conclusion
 
 | Theory                                  | Where the tooling answers it                                                                            |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------- | --- |
 | Test pyramid: few, high-value E2E flows | 3 chained EShop flows; effort redirected into measurement                                               |
 | Locator stability spectrum              | Playwright's user-facing locator API; MCP grounding biasing AI output toward role/text; activity rubric |
 | Flakiness as a measurable attribute     | Auto-waiting + no-sleep rule; context throttling; 10-run protocol in `metrics/flakiness.md`             |
 | Oracle problem / weak AI assertions     | Side-by-side assertion diffs, hand vs. generated; human-strengthened oracles                            |
-| Grounded vs. ungrounded generation      | Copilot-with-MCP vs. Copilot-without-MCP contrast (`#cart-badge`)                                       |
-| Healing can mask defects                | Healer vs. 2-click-bug experiment; every-heal-is-a-code-review rule                                     |
-| Checking ≠ testing (Bach)               | Recommendation memo: agents draft and propose; humans decide and merge                                  |
+| Grounded vs. ungrounded generation      | Copilot-with-MCP vs. Copilot-without-MCP contrast (`getByLabel` failure)                                |
+| Healing can mask defects                | 2-click-bug found and silently absorbed during generation; every-heal-is-a-code-review rule             |
+| Checking ≠ testing (Bach)               | Recommendation memo: agents draft and propose; humans decide and merge                                  |     |
 
 **Debrief numbers (from the 3-week study):** hand-written tests took **[X] min per flow** to author, with a **[Y]% flake rate** over 10 throttled runs; AI-generated tests reached a first draft in **[X′] min**, but needed **[Z] invented selectors** and **[N] weak assertions** repaired by hand. _(Exact figures recorded in `metrics/flakiness.md`.)_
 
