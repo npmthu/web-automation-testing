@@ -13,6 +13,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // firefox/webkit out of scope — assignment only requires single-browser coverage
   ],
   webServer: {
     command: 'npm run dev',
