@@ -11,8 +11,7 @@ test.describe('FR-02: Login', () => {
     await page.locator('input[type="text"]').first().fill('test@eshop.com');
     await page.locator('input[type="text"]').nth(1).fill('Test1234!');
     await page.getByRole('button', { name: 'Sign In' }).click();
-
-    await expect(page).not.toHaveURL(LOGIN_URL);
+    await expect(page.getByText(/Chào,/)).toBeVisible();
   });
 
   test('invalid credentials show an error message', async ({ page }) => {
