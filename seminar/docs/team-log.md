@@ -173,7 +173,7 @@ margin cho phần còn lại — 2 lần chạy rơi vào đúng lúc cả setup
 Ngoài ra có một investigation bổ sung (không bắt buộc theo AC) trên FR-07,
 dùng production build + concurrency thật (`--workers=10`) thay vì dev server
 tuần tự — tìm ra flake 5/10 do contention CPU/backend dùng chung, chi tiết ở
-`frontend-web/metrics/flakiness.md`.
+`frontend-web/metrics/flakiness-concurrency.md`.
 
 ---
 
@@ -341,7 +341,7 @@ dẫn).
 
 ---
 
-### [ ] WAT-22 — Quay Demo_Screencast.mp4 — Khoa (quay) + Hiếu (dựng)
+### [x] WAT-22 — Quay Demo_Screencast.mp4 — Khoa (quay) + Hiếu (dựng)
 
 **SP:** 5 · **AC:** 5–8 phút, 1080p, ≤100MB, tiếng Anh, không nhạc nền, 1 feature Playwright + 1 feature AI
 

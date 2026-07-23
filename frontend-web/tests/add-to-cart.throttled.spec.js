@@ -10,19 +10,19 @@ import { test, expect } from "@playwright/test";
 // --port 4173` in this directory first. Runs against that production build,
 // not the Vite dev server — the dev server serves ~90 unbundled ES module
 // requests per load, and at throttled latency that never finishes (see
-// metrics/flakiness.md, "methodology journey").
+// frontend-web/metrics/flakiness-concurrency.md, "methodology journey").
 //
 // The flow is split into two test.step() blocks so the JSON reporter
 // records their durations separately: "setup" (navigate + login) vs
 // "run" (the add-to-cart + cart assertion actually under test). These map
-// to the "setup time" / "run time" columns in metrics/flakiness.md.
+// to the "setup time" / "run time" columns in frontend-web/metrics/flakiness-concurrency.md.
 //
 // test.setTimeout(10_000) is intentionally tight: run sequentially (1
 // worker) it never flakes. Run concurrently (`--repeat-each=10 --workers=10`
 // on this 8-core machine), real contention on the shared backend (single
 // Node event loop + single sqlite3 connection) and CPU-starved Chromium
 // instances push some runs past 10s — that is the flake investigated in
-// metrics/flakiness.md (root cause: fixed timeout with no headroom for
+// frontend-web/metrics/flakiness-concurrency.md (root cause: fixed timeout with no headroom for
 // concurrent execution, not a bug in the flow itself).
 test("login → add to cart → giỏ hàng cập nhật đúng (throttled)", async ({
   page,

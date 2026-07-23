@@ -168,13 +168,13 @@ login).
 **Mitigation:**
 1. **Give throttled flows their own timeout**, sized with real headroom (`test.setTimeout()` at ≥1.5x the observed sequential total, e.g. ~45s for this specific flow) rather than relying on the untouched 30s default, which was never validated against a throttled, multi-page-transition flow.
 2. **Reduce full-page navigations on the critical path.** `checkout.spec.js` (and this sweep's FR-08 test) calls `page.goto('/')` to return to Home after login — a full reload that re-fetches the entire unbundled module graph under dev mode, rather than a client-side route change. Swapping that for an in-app link click (as `add-to-cart.spec.js` already does, deliberately, to preserve client-side cart state) would likely cut a large slice of the ~27s setup-adjacent cost, since it avoids a second full module-graph fetch.
-3. **Prefer a production build for throttled measurement** (see the dev-server-vs-build failure mode in `User_Guide.md` §6 / `Seminar_Report.md` §Part VI) — this would shrink the ~27s dev-server tax to something closer to WAT-13's FR-07 production-build baseline (~5–7s, see `frontend-web/metrics/flakiness.md`), giving checkout's multi-page flow far more real margin before any timeout matters.
+3. **Prefer a production build for throttled measurement** (see the dev-server-vs-build failure mode in `User_Guide.md` §6 / `Seminar_Report.md` §Part VI) — this would shrink the ~27s dev-server tax to something closer to WAT-13's FR-07 production-build baseline (~5–7s, see `frontend-web/metrics/flakiness-concurrency.md`), giving checkout's multi-page flow far more real margin before any timeout matters.
 
 ### Supplementary investigation: FR-07 under concurrent load
 
 A deeper, separate investigation into FR-07 (production build + deliberately
 oversubscribed concurrency, rather than the dev-server/sequential setup
-above) is documented in full in `frontend-web/metrics/flakiness.md` —
+above) is documented in full in `frontend-web/metrics/flakiness-concurrency.md` —
 including the methodology dead-ends (dev-server navigation timeouts,
 CDP-throttle determinism at low concurrency) that led to it. Headline
 result: 0/10 flakes sequential vs 5/10 flakes at `--workers=10` on an

@@ -2,29 +2,36 @@
 
 > **Redone with Playwright MCP** (see prompt-log.md). This supersedes the
 > original WAT-15 comparison, which was done with blind code generation (no
-> browser tool) because Playwright MCP wasn't available in that environment.
-> The old comparison is kept in prompt-log.md ("Attempt 1") as an audit
-> trail, since it documents a real false-negative class that's worth keeping
-> as evidence even though it's no longer what `add-to-cart.ai-generated.spec.js`
-> contains.
+> browser tool) because Playwright MCP was not available in that environment.
+>
+> The original blind-generation attempt is kept in prompt-log.md
+> ("Attempt 1") as an audit trail because it demonstrates a real
+> false-negative class.
 
-Three versions, all run for real against the live EShop app (backend seeded,
-`npx playwright test`):
+## Test versions and results
+
+Three versions were compared after the MCP redo:
 
 | # | File | Result |
 |---|------|--------|
 | 1 | `tests/add-to-cart.spec.js` (hand-written, WAT-11) | ✓ pass |
-| 2 | `tests/ai-track/add-to-cart.ai-generated.spec.js` (AI, MCP-derived, raw) | ✓ pass — correct |
+| 2 | `tests/ai-track/add-to-cart.ai-generated-2.spec.js` (AI, MCP-derived raw) | ✓ pass — correct |
 | 3 | `tests/ai-track/add-to-cart.ai-audited.spec.js` (AI, audited) | ✓ pass |
 
-All three report green, and this time **all three are true positives** — a
-real difference from Attempt 1. The reason: the MCP-derived draft was written
-*after* watching the live accessibility snapshot confirm the cart actually
-held the product (a table row reading "iPhone 15 Pro Max"), not before. The
-single-click / `page.goto('/cart')` false negative from Attempt 1 could not
-survive this workflow, because the tool used to generate the test is the same
-tool that would have shown the empty-cart state to the person (or agent)
-writing it.
+The original Attempt 1 file:
+
+| File | Result |
+|---|---|
+| `tests/ai-track/add-to-cart.ai-generated.spec.js` (AI, no MCP) | ✗ failed / false-negative class |
+
+was kept separately because it represents the blind-generation experiment.
+
+The MCP-derived draft was written only after the agent observed the live
+application state through Playwright MCP snapshots. During exploration, the
+agent first observed an empty cart after a single click, then discovered that
+the application required a second click before the item appeared in the cart.
+Therefore, the single-click / `page.goto('/cart')` failure mode from Attempt 1
+could not survive the MCP workflow.
 
 ## Side-by-side
 
@@ -34,31 +41,36 @@ writing it.
 | Add-to-cart page | Home (`Home.jsx`, 1-click) | ProductDetail (`ProductDetail.jsx`), clicks **twice** (discovered live, not guessed) | ProductDetail, clicks twice (documented) |
 | Cart navigation | Click "Giỏ hàng" link (client-side route) | Click "Giỏ hàng" link | Click "Giỏ hàng" link |
 | Cart assertion | Row count = 1, product name, quantity = '1' | `expect(page.getByText('iPhone 15 Pro Max')).toBeVisible()` — hardcoded name, containment only | Row count = 1, dynamic product name, quantity = '1' |
-| Product name source | Read from the page (`firstCard.locator('h2')`) | **Hardcoded literal** — happens to match because product #1 was opened | Read from the page (`page.locator('h1')`) |
-| Robust to catalog reorder / different product | Yes | **No** — breaks silently wrong or fails outright if a different product is opened | Yes |
-| Robust to a stray extra cart row | Yes (row count assert) | **No** — `toBeVisible()` on text alone doesn't notice extras | Yes |
-| Navigation-race guard (SPA route swap) | N/A (never navigates to ProductDetail) | Not present | `waitForURL(/\/product\//)` (WAT-18 finding) |
+| Product name source | Read from page (`firstCard.locator('h2')`) | **Hardcoded literal** — happens to match because product #1 was opened | Read from page (`page.locator('h1')`) |
+| Robust to catalog reorder / different product | Yes | **No** — breaks if a different product is opened | Yes |
+| Robust to stray extra cart row | Yes (row count assertion) | **No** — text visibility alone does not detect extra rows | Yes |
+| Navigation-race guard (SPA route swap) | N/A (never navigates to ProductDetail) | Not present | `waitForURL(/\/product\//)` |
 | Actual cart state when assertion runs | 1 item (correct) | 1 item (correct) | 1 item (correct) |
 | Test verdict | pass (correct) | pass (correct) | pass (correct) |
 
-## What changed vs. the Attempt-1 comparison
+## What changed vs. Attempt 1
 
-Attempt 1's headline finding was a **false negative**: an AI-generated test
-that read as reasonable and passed, while the cart was actually empty,
-because its only assertion checked the URL rather than cart contents. That
-gap doesn't exist here — Playwright MCP's `browser_snapshot` calls happened
-*during* generation, so the empty-cart bug was caught before the script was
-ever written, not after.
+Attempt 1 demonstrated a **correctness failure**:
+the AI-generated test looked reasonable but did not verify the actual business
+behavior. It clicked once, navigated with `page.goto('/cart')`, and only
+checked the URL, allowing the test to miss that the cart was empty.
 
-What Playwright MCP does **not** automatically fix is test *design*: the
-MCP-derived draft still asserts loosely (a single `toBeVisible()` on a
-hardcoded name), because that was sufficient to confirm what the person
-building the test already saw on screen. It takes an audit pass — thinking
-about "what if the catalog changes" or "what if this test runs twice without
-cleanup" — to convert "I watched it work once" into an assertion that would
-actually fail if the behavior regressed later. The audited version's dynamic
-product name, row-count check, and quantity check exist for exactly that
-reason.
+The MCP workflow removed this specific problem because the agent observed the
+real DOM state during execution. When the cart appeared empty, the agent could
+adapt before generating the final test.
+
+However, Playwright MCP does not automatically solve test design quality.
+The MCP-derived draft still contained weaker assertions because it only encoded
+what was necessary to confirm the observed scenario.
+
+The audit pass improved robustness by:
+- reading the product name dynamically,
+- checking cart row count,
+- checking quantity,
+- adding navigation stability guards.
+
+Therefore, MCP reduces **behavioral blindness**, but audit is still needed
+to improve **maintainability and regression detection**.
 
 ## Takeaway for [AI-02] / User Guide
 
