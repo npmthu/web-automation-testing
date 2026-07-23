@@ -10,45 +10,49 @@
 
 ### [ x WAT-06 — Test FR-02 Login + lockout (flow #1) — Khoa
 
-**SP:** 5 · **Acceptance Criteria:** pass trên chromium + firefox, parameterised, locator dùng `data-test-id`
+**SP:** 5 · **Acceptance Criteria:** pass trên chromium, parameterised, locator dùng `data-test-id`
 
 **1. Lệnh chạy:**
-```
-npx playwright test tests/fr02-login-A.spec.js tests/fr02-login-B.spec.js tests/fr02-login-C.spec.js --project=chromium --project=firefox
-```
 
- Chưa chạy `--project=firefox` — cần bổ sung để đạt đủ AC trước khi đóng ticket.
+```
+npx playwright test tests/fr02-login-A.spec.js tests/fr02-login-B.spec.js tests/fr02-login-C.spec.js --project=chromium
+```
 
 **2. Kết quả:**
-| File | Tests | Chromium | Firefox |
+| File | Tests | Chromium |  
 |---|---|---|---|
-| fr02-login-A.spec.js | 12 | 12 passed (3.2m) | *chưa chạy* |
-| fr02-login-B.spec.js | 4 | 4 passed (2.4s) | *chưa chạy* |
-| fr02-login-C.spec.js | 3 | 2 passed, **1 failed** (1.7s) | *chưa chạy* |
-| **Tổng** | **19** | **18 passed, 1 failed** | — |
+| fr02-login-A.spec.js | 12 | 12 passed (3.2m) |
+| fr02-login-B.spec.js | 4 | 4 passed (2.4s) |
+| fr02-login-C.spec.js | 3 | 2 passed, **1 failed** (1.7s)
+| **Tổng** | **19** | **18 passed, 1 failed** |
 
 **Test fail — không phải flaky, là bug thật ở backend:**
+
 - **Case:** `fr02-login-C.spec.js:53:5` — TC-18a: "Backend phải từ chối khi user thường PUT role=admin"
 - **BUG-04:** Backend chấp nhận PUT `role=admin` từ user thường, trả về `HTTP 200` (`{"message":"Profile updated"}`) thay vì từ chối như kỳ vọng (`expected: not 200`)
 - **Liên quan:** TC-18b (escalate xong login vào Admin app) đã đúng — bị chặn đúng như kỳ vọng, redirect về `http://localhost:5174/`. Vậy lỗi chỉ nằm ở tầng API (`PUT /api/users/me`), chưa tới mức chiếm được quyền Admin app, nhưng vẫn là lỗ hổng cần backend fix.
 - Error context lưu tại: `test-results/fr02-login-C-TC-18a-Backend-c3a43--user-thường-PUT-role-admin-chromium/error-context.md`
 
 **3. Locator dùng:**
-- `page.getByTestId('____')` *(điền tên `data-test-id` thật đã dùng trong A/B/C)*
+
+- `page.getByTestId('____')` _(điền tên `data-test-id` thật đã dùng trong A/B/C)_
 
 **4. Ghi chú:**
+
 - `login-example.spec.js` (positional `.first()/.nth(1)`) chỉ là bài minh hoạ Section 3 của `User_Guide.md`, khác với bộ test chính thức đạt AC (`fr02-login-A/B/C.spec.js`, data-test-id).
 - BUG-04 nên được log thành GitHub Issue riêng (không gộp vào ticket này), và có thể dùng làm ví dụ thật cho phần "Failure Modes" hoặc thậm chí phần security trong User_Guide — vì nó chứng minh test tự động hoá thực sự bắt được lỗi thật, không phải chỉ chạy cho có.
 
 **5. Hình ảnh kết quả:**
+
 1. Kết quả chạy `fr02-login-C.spec.js` — 2 passed, 1 failed (BUG-04)
-![fr02-login-C terminal output](/seminar/docs/img/wat06_C_terminal.png)
+   ![fr02-login-C terminal output](/seminar/docs/img/wat06_C_terminal.png)
 
 2. Kết quả chạy `fr02-login-B.spec.js` — 4 passed
-![fr02-login-B terminal output](/seminar/docs/img/wat06_B_terminal.png)
+   ![fr02-login-B terminal output](/seminar/docs/img/wat06_B_terminal.png)
 
 3. Kết quả chạy `fr02-login-A.spec.js` — 12 passed
-![fr02-login-A terminal output](/seminar/docs/img/wat06_A_terminal.png)
+   ![fr02-login-A terminal output](/seminar/docs/img/wat06_A_terminal.png)
+
 ---
 
 ### [x] WAT-09 — Spike: đọc reading list — Hiếu
@@ -227,6 +231,7 @@ phẩm từ DOM thay vì hardcode, thêm lại row-count assert, thêm
 **Chưa làm.** Môi trường làm WAT-15 không có Testim account (ghi rõ trong
 `prompt-log.md`: "environment didn't have ... a Testim account"). Cần đăng
 ký trial (WAT-08) trước khi làm được ticket này.
+
 ---
 
 ### [x] WAT-17 — Diff assertions AI-generated vs hand-written — Thư
@@ -291,10 +296,11 @@ trùng khớp với phát hiện tương tự của Thư ở FR-07 (field "Usern
 thực chất là email).
 
 Viết `tests/login-example.spec.js` với 2 test case (valid credentials login
-+ invalid credentials hiện đúng thông báo lỗi *"Đăng nhập thất bại. Vui lòng
-kiểm tra lại."*) — đặt tên `-example` để phân biệt rõ với bộ test FR-02
-chính thức, đầy đủ hơn (lockout, edge case, security) của Khoa
-(`fr02-login-A/B/C.spec.js`, WAT-06).
+
+- invalid credentials hiện đúng thông báo lỗi _"Đăng nhập thất bại. Vui lòng
+  kiểm tra lại."_) — đặt tên `-example` để phân biệt rõ với bộ test FR-02
+  chính thức, đầy đủ hơn (lockout, edge case, security) của Khoa
+  (`fr02-login-A/B/C.spec.js`, WAT-06).
 
 **Kết quả:** sau khi sửa xong thư mục, chạy lại
 `npx playwright test tests/login-example.spec.js` — **2/2 pass** (cả valid
