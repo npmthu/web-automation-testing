@@ -277,6 +277,9 @@ Giờ 6 bullet, không trùng ý nữa. Gửi tiếp phần 7 (References) khi s
 - Bach, J. (1999) — *Test Automation Snake Oil*, v2.1, Satisfice, Inc. https://www.satisfice.com/download/test-automation-snake-oil
 - mabl — *How Auto-Heal Works*, mabl Help Center. https://help.mabl.com/hc/en-us/articles/19078583792404-How-auto-heal-works
 - Selenium Project — *Locator Strategies: Relative Locators*, official Selenium documentation. https://www.selenium.dev/documentation/webdriver/elements/locators/
+- GitHub — *Copilot Plans and Usage Limits*, official documentation. https://github.com/features/copilot/plans?locale=fr-fr
+- Testim — *Documentation*, Testim Help Center. https://help.testim.io/
+- mabl — *Pricing*, mabl.com. https://www.mabl.com/pricing
 
 
 ## 8. AI Usage Disclosure
